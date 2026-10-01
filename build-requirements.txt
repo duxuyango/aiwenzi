@@ -1,0 +1,2 @@
+# Build tools only. Running the source web server needs no third-party packages.
+PyInstaller==6.22.3

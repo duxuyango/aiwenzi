@@ -1,0 +1,16 @@
+{
+  "name": "literary-deepseek",
+  "display_name": "ai文字 · 多模型文学增强",
+  "version": "1.3.1",
+  "kind": "portable-prompt-and-python-plugin",
+  "entrypoint": "plugin.py",
+  "system_prompt": "prompts/literary-system.txt",
+  "providers": "providers.json",
+  "default_base_url": "https://api.deepseek.com",
+  "default_model": "deepseek-flash",
+  "target_model": "DeepSeek-V4.1-Flash",
+  "api_format": "chat-completions",
+  "modes": ["create", "polish", "continue", "diagnose"],
+  "pipelines": ["single", "editor"],
+  "note": "自有插件描述文件，并非浏览器扩展或酒馆的原生扩展清单。"
+}

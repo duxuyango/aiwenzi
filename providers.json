@@ -1,0 +1,107 @@
+{
+  "deepseek": {
+    "name": "DeepSeek 官方",
+    "env_key": "DEEPSEEK_API_KEY",
+    "adapter": "deepseek",
+    "endpoints": [{"id": "official", "name": "官方 API", "url": "https://api.deepseek.com"}],
+    "models": [{"id": "deepseek-flash", "name": "DeepSeek V4.1 Flash"}, {"id": "deepseek-v4-pro", "name": "DeepSeek V4 Pro"}],
+    "note": "Flash 与 Pro 使用同一官方地址和账户 Key；可获取账户当前可用模型。",
+    "docs_url": "https://api-docs.deepseek.com/updates/"
+  },
+  "qwen": {
+    "name": "阿里云百炼 · 通义千问",
+    "env_key": "DASHSCOPE_API_KEY",
+    "adapter": "enable_thinking",
+    "endpoints": [
+      {"id": "beijing", "name": "北京 · 业务空间地址", "url": "https://{workspace}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1"},
+      {"id": "singapore", "name": "新加坡 · 业务空间地址", "url": "https://{workspace}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"},
+      {"id": "legacy-beijing", "name": "北京 · DashScope 兼容地址", "url": "https://dashscope.aliyuncs.com/compatible-mode/v1"}
+    ],
+    "models": [{"id": "qwen3.8-max", "name": "千问 Qwen3.8 Max"}, {"id": "qwen-plus", "name": "千问 Plus"}],
+    "note": "业务空间地址需要填写 WorkspaceId。地址地域、业务空间和 Key 必须对应；以百炼控制台给出的地址为准。",
+    "docs_url": "https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen"
+  },
+  "siliconflow": {
+    "name": "硅基流动 · SiliconFlow",
+    "env_key": "SILICONFLOW_API_KEY",
+    "adapter": "enable_thinking",
+    "endpoints": [{"id": "cn", "name": "SiliconFlow 中国 API", "url": "https://api.siliconflow.cn/v1"}],
+    "models": [{"id": "deepseek-ai/DeepSeek-V4-Flash", "name": "DeepSeek V4 Flash · 硅基流动"}, {"id": "deepseek-ai/DeepSeek-V4-Pro", "name": "DeepSeek V4 Pro · 硅基流动"}],
+    "note": "使用硅基流动的 Key；模型 ID 与 DeepSeek 官方不同。获取模型列表后可选择平台提供的其他模型。",
+    "docs_url": "https://docs.siliconflow.cn/docs/api/chat-completions-post"
+  },
+  "moonshot": {
+    "name": "月之暗面 · Kimi",
+    "env_key": "MOONSHOT_API_KEY",
+    "adapter": "moonshot",
+    "endpoints": [
+      {"id": "cn", "name": "中国站 API", "url": "https://api.moonshot.cn/v1"},
+      {"id": "global", "name": "国际站 API", "url": "https://api.moonshot.ai/v1"}
+    ],
+    "models": [{"id": "kimi-k3", "name": "Kimi K3"}, {"id": "kimi-k2.6", "name": "Kimi K2.6"}],
+    "note": "中国站与国际站使用各自账户的 Key。K3 始终思考，K2.6 可切换；Kimi 预设不发送温度，使用模型默认采样参数。",
+    "docs_url": "https://platform.kimi.com/docs/get-api-key"
+  },
+  "zhipu": {
+    "name": "智谱 · GLM",
+    "env_key": "ZHIPU_API_KEY",
+    "adapter": "glm",
+    "model_list": false,
+    "endpoints": [{"id": "official", "name": "标准模型 API", "url": "https://open.bigmodel.cn/api/paas/v4"}],
+    "models": [{"id": "glm-5.3", "name": "GLM-5.3"}],
+    "note": "此处为标准模型 API，使用对应 Key。GLM-5.3 必须思考，预设采用 low 强度。此预设未启用模型列表检查，请选择模型后用短任务验证。",
+    "docs_url": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+  },
+  "minimax": {
+    "name": "MiniMax",
+    "env_key": "MINIMAX_API_KEY",
+    "adapter": "minimax",
+    "model_list": false,
+    "endpoints": [
+      {"id": "cn", "name": "中国站标准 API", "url": "https://api.minimax.cn/v1"},
+      {"id": "global", "name": "国际站标准 API", "url": "https://api.minimax.io/v1"}
+    ],
+    "models": [{"id": "MiniMax-M3", "name": "MiniMax M3"}, {"id": "MiniMax-M2.7", "name": "MiniMax M2.7"}],
+    "note": "地域与 Key 需对应，使用标准 API 的 Key。M3 可关闭思考，M2.7 始终思考；推理内容会与文学正文分离。此预设未启用模型列表检查，可用短任务验证。",
+    "docs_url": "https://platform.minimax.cn/docs/api-reference/text-openai-api"
+  },
+  "volcengine": {
+    "name": "火山方舟 · 豆包",
+    "env_key": "ARK_API_KEY",
+    "adapter": "deepseek",
+    "model_list": false,
+    "endpoints": [{"id": "beijing", "name": "北京 · 按量模型 API", "url": "https://ark.cn-beijing.volces.com/api/v3"}],
+    "models": [{"id": "doubao-seed-2-1-pro-260628", "name": "Doubao Seed 2.1 Pro"}, {"id": "doubao-seed-2-0-lite-260215", "name": "Doubao Seed 2.0 Lite"}],
+    "note": "使用方舟 API Key，并开通对应模型。此地址按量计费；Coding Plan 使用专属地址，不能混用。也可填写控制台给出的接入点 ID（ep-…）。此预设未启用模型列表检查。",
+    "docs_url": "https://docs.volcengine.com/docs/ark/base-url-and-authentication?lang=zh"
+  },
+  "gemini": {
+    "name": "Google · Gemini",
+    "env_key": "GEMINI_API_KEY",
+    "adapter": "generic",
+    "endpoints": [{"id": "official", "name": "Gemini 兼容 API", "url": "https://generativelanguage.googleapis.com/v1beta/openai"}],
+    "models": [{"id": "gemini-3.8-flash", "name": "Gemini 3.8 Flash"}],
+    "note": "使用 Google AI Studio 的 Gemini API Key。通过兼容接口调用；思考采用模型默认行为。可获取模型列表，选择其他文字模型。",
+    "docs_url": "https://ai.google.dev/gemini-api/docs/openai"
+  },
+  "openrouter": {
+    "name": "OpenRouter · 多模型聚合",
+    "env_key": "OPENROUTER_API_KEY",
+    "adapter": "generic",
+    "model_catalog": true,
+    "auth_path": "/key",
+    "endpoints": [{"id": "official", "name": "OpenRouter API", "url": "https://openrouter.ai/api/v1"}],
+    "models": [],
+    "note": "使用 OpenRouter 的 Key，点击获取平台模型目录后选择模型。目录不等于账户生成权限；连接测试会额外检查 Key。思考与参数支持由所选模型及路由决定。",
+    "docs_url": "https://openrouter.ai/docs/quickstart"
+  },
+  "custom": {
+    "name": "自定义 · Chat Completions 兼容服务",
+    "env_key": "AITEXT_API_KEY",
+    "adapter": "generic",
+    "endpoints": [],
+    "models": [],
+    "note": "填写服务商给出的兼容 API 地址与 Key。可获取模型列表，也可选择自定义模型名。默认只发送标准 Chat Completions 参数。",
+    "docs_url": ""
+  }
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ai文字 · 多模型文学增强</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header><a class="brand" href="/">ai文字<span>文学写作插件</span></a><span class="model" id="model-badge">DEEPSEEK V4.1 FLASH</span></header>
+<main>
+<section class="intro"><p class="eyebrow">让文字更准确，让声音属于作品</p><h1>把想写的，写得更有分量。</h1><p>从具体经验出发，照顾叙述的呼吸与人物的声音。文学性，也可以朴素。</p></section>
+<div class="workspace">
+<section class="input-panel">
+<div class="panel-top"><h2>写作台</h2><button id="example" type="button" class="text-button">载入示例任务</button></div>
+<form id="writing-form">
+<div class="row"><label>本次任务<select id="mode"><option value="create">创作新文本</option><option value="polish">润色原文</option><option value="continue">承接前文续写</option><option value="diagnose">文学诊断</option></select></label><label>文体<select id="genre"><option>小说</option><option>散文</option><option>诗歌</option><option>散文诗</option><option>人物对话</option><option>其他文学形式</option></select></label></div>
+<label>写作或修改要求 <span class="required">必填</span><textarea id="brief" rows="4" maxlength="60000" required placeholder="谁在什么处境里？这一段需要发生什么？希望读者感受到什么？"></textarea></label>
+<label>原文／前文 <span id="source-note">创作时可选</span><textarea id="source" rows="6" maxlength="60000" placeholder="润色、续写和诊断时，把文本放在这里。"></textarea></label>
+<label class="file-control">导入 UTF-8 文本<input id="import" type="file" accept=".txt,.md,text/plain"></label>
+<div class="row"><label>文字气质<select id="profile"><option value="balanced">自然有质感</option><option value="restrained">冷静克制</option><option value="lyrical">抒情有节制</option><option value="oral">口语与人物声音</option><option value="experimental">实验与陌生化</option></select></label><label>目标篇幅<input id="length" maxlength="100" placeholder="例如：800—1200 字"></label></div>
+<label>自己的风格要求<textarea id="style" rows="2" maxlength="60000" placeholder="例如：第一人称，偏口语；允许残句；少解释情绪。"></textarea></label>
+<details><summary>连续性资料与修改边界</summary><label>人物、背景与前情<textarea id="context" rows="3" maxlength="60000" placeholder="人物关系、已发生事件、时间线、已有伏笔……"></textarea></label><label>必须遵守的边界<textarea id="constraints" rows="3" maxlength="60000" placeholder="不能改变哪些事实？哪些句子必须保留？这一段不能解开什么悬念？"></textarea></label></details>
+<label>生成方式<select id="pipeline"><option value="editor">文学编辑：初稿 → 诊断 → 定向修订</option><option value="single">直接生成：一次请求</option></select></label>
+<p class="hint" id="pipeline-hint">编辑流程通常调用 API 三次。适合逐段打磨；建议每次约 5000 字以内。</p>
+<details id="connection-panel"><summary>模型与服务商设置 <span id="connection-state">未设置 Key</span></summary>
+<fieldset id="connection-fields">
+<div class="saved-settings">
+<label for="saved-profile">已保存的配置</label><select id="saved-profile"><option value="">当前设置（未载入配置）</option></select>
+<label for="profile-name">配置名称</label><input id="profile-name" maxlength="60" placeholder="例如：Flash 日常写作／Pro 精修">
+<label class="checkbox"><input id="remember-key" type="checkbox">同时保存此配置的 API Key</label>
+<p class="hint">默认只保存模型与写作偏好。勾选后，Key 将明文保存在本机浏览器中；仅在自己的电脑上使用。</p>
+<div class="settings-actions"><button id="save-profile" type="button">保存为新配置</button><button id="update-profile" type="button" disabled>更新所选配置</button><button id="delete-profile" type="button" disabled>删除所选配置</button></div>
+<p id="settings-status" class="hint" role="status" aria-live="polite">保存后可一键切换；刷新页面恢复上次保存的选择。</p>
+</div>
+<label>模型服务商<select id="provider"><option value="deepseek">DeepSeek 官方</option></select></label>
+<label>API Key<input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="仅在本次页面内使用；也可使用环境变量"></label>
+<label>API 地址<select id="base-url"><option value="official">官方 API · https://api.deepseek.com</option></select></label>
+<label id="workspace-wrap" hidden>业务空间 ID（WorkspaceId）<input id="workspace" maxlength="63" placeholder="填写百炼控制台的业务空间 ID"></label>
+<label id="custom-url-wrap" hidden>自定义 API 地址<input id="custom-base-url" type="url" placeholder="https://服务地址/v1"></label>
+<p id="resolved-url" class="hint">https://api.deepseek.com</p>
+<label>模型名<select id="model"><option value="deepseek-flash">DeepSeek V4.1 Flash · deepseek-flash</option><option value="deepseek-v4-pro">DeepSeek V4 Pro · deepseek-v4-pro</option></select></label>
+<label id="custom-model-wrap" hidden>自定义模型名<input id="custom-model" maxlength="200" placeholder="填写服务商提供的模型 ID"></label>
+<button id="fetch-models" type="button">从账户获取可用模型</button>
+<p id="provider-note" class="hint"></p><a id="provider-docs" class="provider-docs" href="https://api-docs.deepseek.com/updates/" target="_blank" rel="noreferrer">当前服务商接入文档 ↗</a>
+<div class="row"><label>连接方式<select id="transport"><option value="system">使用系统代理设置</option><option value="direct">直连 API（本插件内）</option></select></label><label>每阶段等待上限（秒）<input id="timeout" type="number" min="1" max="600" step="1" value="240" required></label></div>
+<button id="test-connection" type="button">测试连接与密钥</button><p id="test-result" class="hint" role="status" aria-live="polite">检查密钥与当前模型，不生成作品，也不修改系统代理设置。</p>
+<label>参数适配<select id="adapter"><option value="auto">自动 · 按服务商适配</option><option value="generic">通用兼容 · 仅标准参数</option><option value="deepseek">thinking 开关 · DeepSeek／豆包</option><option value="enable_thinking">enable_thinking 参数</option><option value="moonshot">Kimi · 按模型适配</option><option value="glm">GLM-5.3 · 轻量思考</option><option value="minimax">MiniMax · 分离思考正文</option></select></label>
+<p class="hint" id="adapter-hint">服务商预设会自动选择参数格式。</p>
+<label class="checkbox"><input id="thinking" type="checkbox">启用思考模式（模型支持时）</label>
+<div class="row"><label>生成 token 上限<input id="max-tokens" type="number" min="128" max="32768" step="1" value="8192" required></label><label>初稿温度<input id="temperature" type="number" min="0" max="2" step="0.05" value="0.9" required></label></div>
+<p class="hint">温度是可调整的起点，非文学质量保证。Kimi、GLM 适配及其他适配的思考模式不发送温度，采用服务商默认值；token 与中文字数不同。</p>
+</fieldset>
+</details>
+<div class="actions"><button id="generate" class="primary" type="submit">开始写作 <span>↗</span></button><button id="export-prompt" type="button">导出写作提示词</button></div>
+<p class="hint">配置由你主动保存；作品不自动保存。生成会将本次任务与材料发送至你设置的 API；关页前请下载成果。</p>
+</form>
+</section>
+<section class="output-panel">
+<div class="panel-top"><h2>稿纸</h2><span id="status" role="status" aria-live="polite">等待落笔</span></div>
+<div class="tabs" role="tablist" aria-label="稿件阶段"><button type="button" role="tab" aria-selected="true" data-tab="final">定稿</button><button type="button" role="tab" aria-selected="false" data-tab="draft">初稿</button><button type="button" role="tab" aria-selected="false" data-tab="review">编辑意见</button></div>
+<div id="notice" role="alert" hidden></div>
+<div class="paper"><p id="empty">好文字从一个具体的时刻开始。<br><span>写下要求，或者载入一个示例任务。</span></p><pre id="output" hidden></pre></div>
+<div class="output-tools"><span id="count">0 字符</span><div><button id="copy" type="button" disabled>复制当前页</button><button id="download" type="button" disabled>下载当前页</button><button id="download-all" type="button" disabled>下载全部阶段</button></div></div>
+<section class="token-panel" aria-label="Token 用量">
+<div class="panel-top"><h2>Token 用量</h2><span id="usage-model">尚未生成</span></div>
+<div class="token-cards"><div><span>本次输入</span><strong id="input-tokens">—</strong></div><div><span>本次输出</span><strong id="output-tokens">—</strong></div><div><span>本次总量</span><strong id="total-tokens">—</strong></div></div>
+<div class="token-table-wrap"><table class="token-table"><thead><tr><th>生成阶段</th><th>输入</th><th>输出</th><th>合计</th></tr></thead><tbody id="stage-usage"><tr><td colspan="4">阶段结束后显示服务商返回的用量。</td></tr></tbody></table></div>
+<p class="hint" id="usage">数字来自 API，包含提示词与编辑材料；token 与中文字数不同。</p>
+<details id="usage-history"><summary>本机累计记录 <span id="history-total">暂无记录</span></summary><div class="token-table-wrap"><table class="token-table"><thead><tr><th>服务商／模型</th><th>输入</th><th>输出</th><th>合计</th></tr></thead><tbody id="history-rows"></tbody></table></div><p class="hint" id="history-note">仅统计本浏览器已收到的请求用量，不代表账户账单或余额。</p><button id="clear-usage" type="button">清空本机用量记录</button></details>
+</section>
+</section>
+</div>
+<footer><span id="backend-version">ai文字 1.3.1 · 正在核对后台</span><span>支持配置保存与用量记录</span></footer>
+</main><script src="/state.js"></script><script src="/app.js"></script>
+</body></html>
