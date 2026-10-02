@@ -1,0 +1,8 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "aiwenzi",
+  "pages_build_output_dir": "../build/pages",
+  "compatibility_date": "2026-10-02",
+  "send_metrics": false,
+  "services": [{"binding": "LITERARY_API", "service": "aiwenzi"}]
+}

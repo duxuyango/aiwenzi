@@ -1,0 +1,15 @@
+{
+  "name": "aitext-cloudflare",
+  "private": true,
+  "version": "1.4.0",
+  "engines": {"node": ">=22"},
+  "scripts": {
+    "dev": "wrangler dev --ip 127.0.0.1 --port 8787",
+    "deploy": "wrangler deploy",
+    "pages:build": "node cloudflare/build-pages.mjs",
+    "pages:deploy": "npm run deploy && npm run pages:build && wrangler pages deploy --cwd cloudflare --project-name aiwenzi --branch main",
+    "check": "wrangler deploy --dry-run --outdir build/cloudflare",
+    "test": "node --test tests/*.cjs cloudflare/tests/*.test.mjs"
+  },
+  "devDependencies": {"wrangler": "4.146.0"}
+}

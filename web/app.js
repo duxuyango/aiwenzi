@@ -12,6 +12,7 @@ function readLocal(key) {
 }
 function writeLocal(key,value) {localStorage.setItem(key,JSON.stringify(value));}
 function settingsMessage(text) {$('settings-status').textContent=text;}
+function missingKeyInstruction() {return config?.runtime==='cloudflare'?'请填写当前服务商的 API Key。':'请填写当前服务商的 Key，或使用环境变量。';}
 function credentialScope() {
   const c=connectionData(), endpoint=providerData()?.endpoints.find(e=>e.id===c.endpoint);
   const address=c.endpoint==='custom'?c.base_url:endpoint?.url.replace('{workspace}',c.workspace)||'';
@@ -45,7 +46,7 @@ function saveSettings(update=false) {
     if(!item)throw new Error('配置无效，请检查连接选项。');
     const profiles=update?savedSettings.profiles.map(p=>p.id===id?item:p):[...savedSettings.profiles,item];
     const next={version:1,selected:id,profiles};writeLocal(SETTINGS_KEY,next);savedSettings=next;renderSavedSettings();
-    settingsMessage(`已${update?'更新':'保存'}“${item.name}”。${item.connection.api_key?'包含本机保存的 Key。':'API Key 未保存，切换时需填写或使用环境变量。'}`);
+    settingsMessage(`已${update?'更新':'保存'}“${item.name}”。${item.connection.api_key?'包含本机保存的 Key。':config?.runtime==='cloudflare'?'API Key 未保存，切换时请填写。':'API Key 未保存，切换时需填写或使用环境变量。'}`);
   }catch(error){settingsMessage(error.message||'保存失败，浏览器可能禁用了本地存储。');}
 }
 function applySettings(item) {
@@ -69,7 +70,7 @@ function applySettings(item) {
     taskChanged();connectionChanged();
     savedSettings.selected=item.id;renderSavedSettings();
     $('test-result').textContent=supportsModelList()?'已载入配置，连接尚未测试。':'此预设未配置模型列表检查；填写 Key 并选择模型后，用短任务生成验证连接。';
-    settingsMessage(`已载入“${item.name}”。${c.api_key&&keyMatches?'已恢复此地址的 Key。':'请填写当前服务商的 Key，或使用环境变量。'}`);
+    settingsMessage(`已载入“${item.name}”。${c.api_key&&keyMatches?'已恢复此地址的 Key。':missingKeyInstruction()}`);
     try{writeLocal(SETTINGS_KEY,savedSettings);}catch{settingsMessage('配置已载入，但浏览器未能记住本次选择。');}
   }finally{applyingSettings=false;}
 }
@@ -120,7 +121,15 @@ async function checkBackend() {
     throw new Error('当前后台仍是旧版本。请先下载需要保留的稿件，关闭旧的ai文字启动窗口，再用更新后的启动器重启；仅刷新页面不能更新后台。');
   }
   config=state;
-  $('backend-version').textContent=`ai文字 1.3.1 · 后台 ${state.version} · 已匹配`;
+  const online=state.runtime==='cloudflare';
+  $('backend-version').textContent=online?`ai文字 ${state.version} · Cloudflare 网页版`:`ai文字 1.3.1 · 后台 ${state.version} · 已匹配`;
+  $('hosting-note').hidden=!online;
+  $('app-kind').textContent=online?'文学写作 · 在线版':'文学写作插件';
+  $('transport-wrap').hidden=online;
+  if(online) {
+    $('transport').value='direct';
+    $('request-info').textContent='使用你自己的 API Key，模型费用由对应平台计收。任务与原文经本站转发；配置在此浏览器保存，作品请下载。';
+  }
   return state;
 }
 function taskData() {
@@ -174,14 +183,16 @@ function endpointChanged(clearKey=true) {
   $('workspace-wrap').hidden=!workspace;$('workspace').required=workspace;
   $('resolved-url').textContent=custom?($('custom-base-url').value.trim()||'请填写自定义 API 地址。'):
     endpoint?.url.replace('{workspace}',$('workspace').value.trim()||'{WorkspaceId}')||'';
-  $('api-key').placeholder=`当前地址的 Key；也可设置 ${custom?'AITEXT_API_KEY':providerData()?.env_key||'AITEXT_API_KEY'}`;
+  $('api-key').placeholder=config?.runtime==='cloudflare'?'填写当前服务商与地域的 API Key':`当前地址的 Key；也可设置 ${custom?'AITEXT_API_KEY':providerData()?.env_key||'AITEXT_API_KEY'}`;
   if(!supportsModelList())$('test-result').textContent='此预设未配置模型列表检查；填写 Key 并选择模型后，用短任务生成验证连接。';
   connectionChanged();
 }
 function providerChanged(clearKey=true) {
   const provider=providerData();if(!provider)return;
   if(clearKey) clearCredential();
-  $('base-url').replaceChildren(...provider.endpoints.map(item=>new Option(`${item.name} · ${item.url}`,item.id)),new Option('自定义 API 地址…','custom'));
+  const endpoints=provider.endpoints.map(item=>new Option(`${item.name} · ${item.url}`,item.id));
+  if(provider.allow_custom_endpoint!==false)endpoints.push(new Option('自定义 API 地址…','custom'));
+  $('base-url').replaceChildren(...endpoints);
   $('workspace').value='';$('custom-base-url').value='';$('custom-model').value='';
   $('adapter').value='auto';$('thinking').checked=false;
   $('provider-note').textContent=provider.note;
@@ -268,7 +279,7 @@ $('clear-usage').addEventListener('click',()=>{
   try{localStorage.removeItem(USAGE_KEY);ledger={version:1,rows:[]};ledgerStorageError='';renderLedger();}catch{ledgerStorageError='清空失败，浏览器未能修改本地存储。';renderLedger();}
 });
 for (const id of ['adapter','thinking','api-key','custom-model']) $(id).addEventListener('input',connectionChanged);
-$('provider').addEventListener('change',()=>providerChanged());
+  $('provider').addEventListener('change',()=>providerChanged());
 $('base-url').addEventListener('change',()=>{renderModelChoices(providerData()?.models||[]);endpointChanged();});
 for(const id of ['workspace','custom-base-url']) $(id).addEventListener('input',()=>endpointChanged());
 $('model').addEventListener('change',()=>{

@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ai文字 · 多模型文学增强</title><link rel="stylesheet" href="/style.css"></head>
 <body>
-<header><a class="brand" href="/">ai文字<span>文学写作插件</span></a><span class="model" id="model-badge">DEEPSEEK V4.1 FLASH</span></header>
+<header><a class="brand" href="/">ai文字<span id="app-kind">文学写作插件</span></a><span class="model" id="model-badge">DEEPSEEK V4.1 FLASH</span></header>
 <main>
 <section class="intro"><p class="eyebrow">让文字更准确，让声音属于作品</p><h1>把想写的，写得更有分量。</h1><p>从具体经验出发，照顾叙述的呼吸与人物的声音。文学性，也可以朴素。</p></section>
+<aside id="hosting-note" class="hosting-note" hidden><strong>公开网页版 · 使用自己的 API Key</strong><p>写作请求经本网站的 Cloudflare 服务转发给所选模型平台，包含 Key、任务与原文。程序不将这些内容保存到数据库或应用日志。配置与用量只保存在此浏览器；关页前请下载稿件。</p></aside>
 <div class="workspace">
 <section class="input-panel">
 <div class="panel-top"><h2>写作台</h2><button id="example" type="button" class="text-button">载入示例任务</button></div>
@@ -38,7 +39,7 @@
 <label id="custom-model-wrap" hidden>自定义模型名<input id="custom-model" maxlength="200" placeholder="填写服务商提供的模型 ID"></label>
 <button id="fetch-models" type="button">从账户获取可用模型</button>
 <p id="provider-note" class="hint"></p><a id="provider-docs" class="provider-docs" href="https://api-docs.deepseek.com/updates/" target="_blank" rel="noreferrer">当前服务商接入文档 ↗</a>
-<div class="row"><label>连接方式<select id="transport"><option value="system">使用系统代理设置</option><option value="direct">直连 API（本插件内）</option></select></label><label>每阶段等待上限（秒）<input id="timeout" type="number" min="1" max="600" step="1" value="240" required></label></div>
+<div class="row"><label id="transport-wrap">连接方式<select id="transport"><option value="system">使用系统代理设置</option><option value="direct">直连 API（本插件内）</option></select></label><label>每阶段等待上限（秒）<input id="timeout" type="number" min="1" max="600" step="1" value="240" required></label></div>
 <button id="test-connection" type="button">测试连接与密钥</button><p id="test-result" class="hint" role="status" aria-live="polite">检查密钥与当前模型，不生成作品，也不修改系统代理设置。</p>
 <label>参数适配<select id="adapter"><option value="auto">自动 · 按服务商适配</option><option value="generic">通用兼容 · 仅标准参数</option><option value="deepseek">thinking 开关 · DeepSeek／豆包</option><option value="enable_thinking">enable_thinking 参数</option><option value="moonshot">Kimi · 按模型适配</option><option value="glm">GLM-5.3 · 轻量思考</option><option value="minimax">MiniMax · 分离思考正文</option></select></label>
 <p class="hint" id="adapter-hint">服务商预设会自动选择参数格式。</p>
@@ -48,7 +49,7 @@
 </fieldset>
 </details>
 <div class="actions"><button id="generate" class="primary" type="submit">开始写作 <span>↗</span></button><button id="export-prompt" type="button">导出写作提示词</button></div>
-<p class="hint">配置由你主动保存；作品不自动保存。生成会将本次任务与材料发送至你设置的 API；关页前请下载成果。</p>
+<p class="hint" id="request-info">配置由你主动保存；作品不自动保存。生成会将本次任务与材料发送至你设置的 API；关页前请下载成果。</p>
 </form>
 </section>
 <section class="output-panel">

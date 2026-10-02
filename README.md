@@ -2,7 +2,7 @@
 
 支持 DeepSeek、通义千问、硅基流动、Kimi、智谱 GLM、MiniMax、火山方舟、Gemini、OpenRouter 及自定义兼容 API 的文学写作增强插件，帮助作者打磨小说、散文、诗歌和人物对话。
 
-**版本：1.3.1 · Windows EXE／Python 源码版 · 本地运行**
+**Windows／Python 版：1.3.1 · Cloudflare 公开网页版：1.4.0**
 
 ai文字把文学写作指令、编辑流程和多服务商 API 接入整合在一起。它关注具体经验、叙述视角、人物声音、情感表达和语言节奏，让修改围绕作品本身展开。
 
@@ -88,6 +88,24 @@ OpenRouter 使用公开的平台模型目录，目录中的模型不代表当前
 通常调用 API 三次。诊断需要引用候选正文，指出问题的读者效果和具体修改方向；修订保留有效表达，并服从作者的原始要求。界面保留初稿、编辑意见与最终文本，便于比较。
 
 “文学诊断”任务始终只调用一次 API，不自动改写原文。编辑流程消耗更多请求和 token，实际费用按服务商计费。若后续阶段失败，保留已完成的文本；若输出被截断，停止后续阶段并提示调整篇幅或 token 上限。
+
+## Cloudflare 公开网页版
+
+**在线使用：[打开 ai文字](https://aiwenzi.pages.dev/)**。选择模型服务商，填写自己的 API Key，再填写写作要求即可开始。首次试用可选择“直接生成”。
+
+提供 Cloudflare Workers + Static Assets 部署版本，别人通过网址即可使用，不需要安装 EXE 或 Python。保留九家预设服务商、多模型、文学编辑、配置保存和 token 用量统计。访问者使用自己的 API Key，网站不使用发布者的模型密钥；配置与用量仍保存在访问者浏览器中。
+
+完整部署步骤见 **[Cloudflare 部署说明](Cloudflare部署说明.md)**。网页和 API 一起发布到 Workers；只上传静态网页无法运行写作接口。发布成功后，由 Cloudflare 提供账号对应的公开网址；本地预览地址不是公开网址。
+
+也支持 Pages 入口，使用 `项目名.pages.dev` 的短网址。Pages 通过服务绑定接入原有 Worker，保留完整写作流程和限流。首次创建 Pages 项目后运行 `npm run pages:deploy`，以后使用同一命令更新；创建和授权步骤见部署说明。
+
+```powershell
+npm ci
+npx wrangler login
+npm run deploy
+```
+
+构建与发布需要 Node.js 22 或更新版本；访问者只需浏览器。先用 `npm test` 和 `npm run check` 验证，再发布。公开版允许自定义模型名，API 地址限定为预设服务商的地址；本地版仍支持自定义 API 地址。Key 和作品会经网站 Worker 转发至所选模型平台，程序不写入数据库或应用日志。
 
 ## Windows 用户：双击启动，无需安装 Python
 

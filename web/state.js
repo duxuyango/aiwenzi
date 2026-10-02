@@ -22,6 +22,7 @@
     if(!raw || typeof raw.id!=='string' || !raw.id || raw.id.length>100 || typeof raw.name!=='string' || !raw.name.trim()) return null;
     const c=raw.connection, provider=Object.hasOwn(providers,c?.provider)?providers[c.provider]:null;
     if(!provider || !Array.isArray(provider.endpoints) || (c.endpoint!=='custom'&&!provider.endpoints.some(e=>e.id===c.endpoint))) return null;
+    if(c.endpoint==='custom' && provider.allow_custom_endpoint===false) return null;
     const string=(value,max=200)=>typeof value==='string'?value.slice(0,max):'';
     const numeric=(value,fallback,min,max,integer=false)=>typeof value==='number'&&Number.isFinite(value)&&value>=min&&value<=max&&(!integer||Number.isInteger(value))?value:fallback;
     const connection={provider:c.provider,endpoint:c.endpoint,workspace:string(c.workspace,63),base_url:string(c.base_url,2000),model:string(c.model),
