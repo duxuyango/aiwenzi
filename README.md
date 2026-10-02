@@ -109,7 +109,7 @@ npm run deploy
 
 ## Windows 用户：双击启动，无需安装 Python
 
-在本仓库的 **Releases（发行版）** 页面，下载 `ai文字-v1.3.1-Windows-x64.zip`。源码的 “Download ZIP” 下载的是源码，不包含编译好的 EXE。维护者需要先将便携包上传到 Releases，读者才能在那里下载。
+在本仓库的 **[Releases（发行版）](https://github.com/duxuyango/aiwenzi/releases/tag/v1.3.1)** 页面，下载 **[aiwenzi-v1.3.1-Windows-x64.zip](https://github.com/duxuyango/aiwenzi/releases/download/v1.3.1/aiwenzi-v1.3.1-Windows-x64.zip)**。源码的 “Download ZIP” 下载的是源码，不包含编译好的 EXE。发行版的校验文件使用实际下载附件名；本地构建的便携包仍命名为 `ai文字-v1.3.1-Windows-x64.zip`。
 
 1. 将便携包完整解压到一个文件夹。
 2. 双击 **`ai文字.exe`**，启动器会自动打开浏览器写作台。
